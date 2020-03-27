@@ -1,0 +1,6 @@
+*.zip
+*.whl
+*.run
+Sen2Agri*/
+Maja*/
+id_rsa

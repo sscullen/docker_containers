@@ -1,0 +1,20 @@
+FROM centos:7 as base
+
+RUN yum -y update && \
+    yum -y install centos-release-scl && yum -y groupinstall "Development Tools" && \
+    yum -y install gcc gcc-c++ openssl-devel openssh-server bzip2-devel wget file libffi-devel git
+
+RUN wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz && \
+    tar xzf Python-3.7.3.tgz && cd Python-3.7.3 && ./configure --enable-optimizations && \
+    make altinstall && python3.7 -v && rm -rf /Python*
+
+RUN python3.7 -m pip install --upgrade pip
+
+RUN wget https://download.osgeo.org/gdal/2.2.3/gdal-2.2.3.tar.gz && \
+    tar xzf gdal-2.2.3.tar.gz && cd gdal-2.2.3 && ./configure && make && make install && rm -rf /gdal-2.2.3*
+
+# Because we built GDAL from source, we need to update the system libraries
+RUN echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig -v
+
+RUN python3.7 -m pip install --global-option=build_ext --global-option="-I/usr/local/include" GDAL==$(gdal-config --version)
+

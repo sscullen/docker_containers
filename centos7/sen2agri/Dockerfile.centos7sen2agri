@@ -1,0 +1,5 @@
+FROM zeus684440.agr.gc.ca/centos7base
+
+RUN yum -y install nfs-utils && \
+    mkdir /mnt/zeusdrobo && \
+    mount -t nfs -o nolock zeus684440.agr.gc.ca:/mnt/drobo /mnt/zeusdrobo
